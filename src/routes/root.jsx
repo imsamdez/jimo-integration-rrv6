@@ -6,6 +6,7 @@ import {
   Outlet,
   redirect,
   useLoaderData,
+  useLocation,
   useNavigation,
   useSubmit,
 } from "react-router-dom";
@@ -35,23 +36,29 @@ export default function Root() {
   const searching =
     navigation.location &&
     new URLSearchParams(navigation.location.search).has("q");
+  const location = useLocation();
 
   useEffect(() => {
     document.getElementById("q").value = q;
   }, [q]);
 
-  const handlePopstate = () => {
-    alert("POPSTATE");
-  };
-
   // For project using Hook component
   useEffect(() => {
-    window.addEventListener("popstate", handlePopstate);
+    window.jimo = [];
+    const s = document.createElement("script");
 
-    return () => {
-      window.removeEventListener("popstate", handlePopstate);
-    };
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = "https://undercity.usejimo.com/jimo-invader.js";
+    window["JIMO_PROJECT_ID"] = "9fec4556-f650-411f-960d-12f1472b3bcb"; // Update this
+
+    document.getElementsByTagName("head")[0].appendChild(s);
   }, []);
+
+  // Fix for react router v6+
+  useEffect(() => {
+    window.jimo.push(["do", "boosted:hash-change"]);
+  }, [location]);
 
   return (
     <>
