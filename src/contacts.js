@@ -5,6 +5,7 @@ import sortBy from "sort-by";
 export async function getContacts(query) {
   await fakeNetwork(`getContacts:${query}`);
   let contacts = await localforage.getItem("contacts");
+
   if (!contacts) contacts = [];
   if (query) {
     contacts = matchSorter(contacts, query, { keys: ["first", "last"] });
@@ -25,6 +26,7 @@ export async function createContact() {
 export async function getContact(id) {
   await fakeNetwork(`contact:${id}`);
   let contacts = await localforage.getItem("contacts");
+
   if (contacts) {
     let contact = contacts.find((contact) => contact.id === id);
     return contact ?? null;
@@ -54,6 +56,35 @@ export async function deleteContact(id) {
     return true;
   }
   return false;
+}
+
+export async function initContacts() {
+  const contacts = await getContacts();
+
+  if (contacts?.length === 0) {
+    set([
+      {
+        id: "g5jwoiq",
+        createdAt: 1686819817276,
+        first: "Jane",
+        last: "Doe",
+        number: "",
+        website: "",
+        avatar: "https://placekitten.com/200/200?image=13",
+        notes: "",
+      },
+      {
+        id: "8h5vjc5",
+        createdAt: 1686819795724,
+        first: "John",
+        last: "Doe",
+        number: "",
+        website: "",
+        avatar: "https://placekitten.com/200/200?image=7",
+        notes: "",
+      },
+    ]);
+  }
 }
 
 function set(contacts) {

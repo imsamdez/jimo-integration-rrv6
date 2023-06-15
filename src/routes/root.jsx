@@ -9,7 +9,7 @@ import {
   useNavigation,
   useSubmit,
 } from "react-router-dom";
-import { createContact, getContacts } from "../contacts";
+import { createContact, getContacts, initContacts } from "../contacts";
 
 export async function action() {
   const contact = await createContact();
@@ -19,7 +19,12 @@ export async function action() {
 export async function loader({ request }) {
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
-  const contacts = await getContacts(q);
+  let contacts = await getContacts(q);
+
+  if (contacts.length === 0) {
+    await initContacts();
+    contacts = await getContacts(q);
+  }
   return { contacts, q };
 }
 
@@ -34,6 +39,19 @@ export default function Root() {
   useEffect(() => {
     document.getElementById("q").value = q;
   }, [q]);
+
+  const handlePopstate = () => {
+    alert("POPSTATE");
+  };
+
+  // For project using Hook component
+  useEffect(() => {
+    window.addEventListener("popstate", handlePopstate);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopstate);
+    };
+  }, []);
 
   return (
     <>

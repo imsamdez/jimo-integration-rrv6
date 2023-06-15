@@ -1,29 +1,24 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import {
-  createRoutesFromElements,
-  createBrowserRouter,
-  RouterProvider,
-  Route,
-} from "react-router-dom"
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import './index.css'
-import ErrorPage from './error';
-import Index from './routes/index';
+import ErrorPage from "./error";
+import "./index.css";
+import Index from "./routes/index";
 
-import Root, { 
-  loader as rootLoader,
-  action as rootAction,
-} from "./routes/root";
 import Contact, {
-  loader as contactLoader,
   action as contactAction,
-} from './routes/contact';
+  loader as contactLoader,
+} from "./routes/contact";
+import { action as destroyAction } from "./routes/destroy";
 import EditContact, {
-  loader as editLoader,
   action as editAction,
-} from './routes/edit';
-import { action as destroyAction } from './routes/destroy';
+  loader as editLoader,
+} from "./routes/edit";
+import Root, {
+  action as rootAction,
+  loader as rootLoader,
+} from "./routes/root";
 
 const router = createBrowserRouter([
   {
@@ -35,9 +30,10 @@ const router = createBrowserRouter([
     children: [
       {
         errorElement: <ErrorPage />,
-        children:[
+        children: [
           { index: true, element: <Index /> },
-          { path: "contacts/:contactId",
+          {
+            path: "contacts/:contactId",
             element: <Contact />,
             loader: contactLoader,
             action: contactAction,
@@ -59,43 +55,9 @@ const router = createBrowserRouter([
   },
 ]);
 
-// // As JSX objects instead ->
-// const router2 = createBrowserRouter(
-//   createRoutesFromElements(
-//     <Route
-//       path="/"
-//       element={<Root/>}
-//       loader={rootLoader}
-//       action={rootAction}
-//       errorElement={<ErrorPage />}
-//     >
-//       <Route errorElement={<ErrorPage />} >
-//         <Route index element={<Index />} />
-//         <Route
-//           path="contacts/:contactId"
-//           element={<Contact />}
-//           loader={contactLoader}
-//           action={contactAction}
-//         />
-//         <Route
-//           path="contacts/:contactId/edit"
-//           element={<EditContact />}
-//           loader={contactLoader}
-//           action={editAction}
-//         />
-//        <Route
-//           path="contacts/:contactId/destroy"
-//           action={destroyAction}
-//         />
-//       </Route>
-//     </Route>
-//   )
-// );
-
-
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
-)
-{/* <RouterProvider router={router} /> */}
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <RouterProvider router={router} />
+);
+{
+  /* <RouterProvider router={router} /> */
+}
